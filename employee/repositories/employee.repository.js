@@ -2,7 +2,9 @@ const {dynamoDBClient} = require("../../infra/database/config");
 const uuid = require("uuid");
 
 class EmployeeRepository {
-    tableName = 'employees';
+    tableName = {
+        TableName: 'employees'
+    };
     dynamo = dynamoDBClient;
 
     constructor(
@@ -18,7 +20,7 @@ class EmployeeRepository {
                 id: uuid.v4()
             }
             const params = {
-                TableName: this.tableName,
+                ...this.tableName,
                 Item: employee
             };
 
@@ -30,11 +32,50 @@ class EmployeeRepository {
 
     async getAll(){
         try {
-            const params = {
-                TableName: this.tableName,
-            };
+            return await this.dynamo.scan(this.tableName).promise();
+        } catch (error) {
+            throw error;
+        }
+    }
 
-            return await this.dynamo.scan(params).promise();
+    async delete(id) {
+        try {
+            const params = {
+                ...this.tableName,
+                Key: {
+                    id
+                }
+            }
+
+            return await this.dynamo.delete(params).promise();
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async put(id, body) {
+        try {
+            const {office, name, age} = body;
+            const params = {
+                ...this.tableName,
+                Key: {
+                    id
+                },
+                UpdateExpression: "set #o = :o, #n = :n, #a = :a",
+                ExpressionAttributeNames: {
+                    "#o": "office",
+                    "#n": "name",
+                    "#a": "age"
+                },
+                ExpressionAttributeValues: {
+                    ":o": office,
+                    ":n": name,
+                    ":a": age
+                },
+                ReturnValues: "ALL_NEW"
+            }
+
+            return await this.dynamo.update(params).promise();
         } catch (error) {
             throw error;
         }

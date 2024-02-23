@@ -9,6 +9,7 @@ describe('EmployeeRepository', () => {
             promise: jest.fn().mockResolvedValue({})
         };
         employeeRepository = new EmployeeRepository(mockDynamoDBClient);
+
         const employeeData = {
             name: 'John Doe',
             position: 'Developer'
@@ -43,5 +44,54 @@ describe('EmployeeRepository', () => {
 
         expect(mockDynamoDBClient.scan).toHaveBeenCalledTimes(1);
         expect(result).toEqual(returnMock);
+    });
+
+    it('should delete employee', async () => {
+        const mockParams = {"Key": {"id": "1"}, "TableName": "employees",}
+        const mockDynamoDBClient = {
+            delete: jest.fn().mockReturnThis(),
+            promise: jest.fn().mockResolvedValue({})
+        };
+        employeeRepository = new EmployeeRepository(mockDynamoDBClient);
+        await employeeRepository.delete('1');
+
+        expect(mockDynamoDBClient.delete).toHaveBeenCalledTimes(1);
+        expect(mockDynamoDBClient.delete).toHaveBeenCalledWith(mockParams);
+    });
+
+    it('should update employee', async () => {
+        const body = {
+            name: "Jose Santos",
+            age: 100,
+            office: "retire"
+        }
+        const {name, age, office} = body;
+
+        const mockParams = {
+            "Key": {"id": "1"}, "TableName": "employees",
+            UpdateExpression: "set #o = :o, #n = :n, #a = :a",
+            ExpressionAttributeNames: {
+                "#o": "office",
+                "#n": "name",
+                "#a": "age"
+            },
+            ExpressionAttributeValues: {
+                ":o": office,
+                ":n": name,
+                ":a": age
+            },
+            ReturnValues: "ALL_NEW"
+        }
+        const mockDynamoDBClient = {
+            update: jest.fn().mockReturnThis(),
+            promise: jest.fn().mockResolvedValue({"age": 100, "name": "Jose Santos", "office": "retire"})
+        };
+
+        employeeRepository = new EmployeeRepository(mockDynamoDBClient);
+        const result = await employeeRepository.put('1', body);
+
+        expect(mockDynamoDBClient.update).toHaveBeenCalledTimes(1);
+        expect(mockDynamoDBClient.update).toHaveBeenCalledWith(mockParams);
+        expect(result).toEqual(body)
     });
 });

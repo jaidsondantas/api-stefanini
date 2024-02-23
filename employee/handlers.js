@@ -4,6 +4,7 @@ const {extractBody} = require("./helpers/extract.helper");
 const {headers} = require("../config/config");
 const CreateEmployeeUseCase = require("./use-cases/create-employee.use-case");
 const GetAllEmployeeUseCase = require("./use-cases/get-all-employee.use-case");
+const DeleteEmployeeUseCase = require("./use-cases/delete-employee.use-case");
 
 let body;
 
@@ -30,6 +31,23 @@ module.exports.getAllEmployee = async (event) => {
     let statusCode = 200;
     try {
         const res = await GetAllEmployeeUseCase.execute();
+        body = JSON.stringify(res)
+    } catch (error) {
+        statusCode = error?.statusCode
+        body = error?.message
+    }
+
+    return {
+        statusCode,
+        body,
+        headers,
+    };
+}
+
+module.exports.deleteEmployee = async (event) => {
+    let statusCode = 200;
+    try {
+        const res = await DeleteEmployeeUseCase.execute(event.pathParameters.id);
         body = JSON.stringify(res)
     } catch (error) {
         statusCode = error?.statusCode
