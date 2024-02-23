@@ -1,12 +1,16 @@
-const {createEmployee, deleteEmployee} = require('../../employee/handlers');
+const {createEmployee, deleteEmployee, updateEmployee} = require('../../employee/handlers');
 const CreateEmployeeUseCase = require('../../employee/use-cases/create-employee.use-case');
 const DeleteEmployeeUseCase = require('../../employee/use-cases/delete-employee.use-case');
+const UpdateEmployeeUseCase = require('../../employee/use-cases/update-employee.use-case');
 
 
 jest.mock('../../employee/use-cases/create-employee.use-case', () => ({
     execute: jest.fn(),
 }));
 jest.mock('../../employee/use-cases/delete-employee.use-case', () => ({
+    execute: jest.fn(),
+}));
+jest.mock('../../employee/use-cases/update-employee.use-case', () => ({
     execute: jest.fn(),
 }));
 
@@ -71,5 +75,65 @@ describe('deleteEmployee', () => {
         await deleteEmployee(event);
 
         expect(DeleteEmployeeUseCase.execute).toHaveBeenCalledTimes(1);
+    });
+});
+
+
+describe('updateEmployee', () => {
+
+    const bodyMock = {
+        "name": "Jaidson Dantas",
+        "age": 30,
+        "office": "Developer"
+    }
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should update an employee successfully', async () => {
+        const event = {
+            body: JSON.stringify(bodyMock),
+            pathParameters: {id: "1"}
+        };
+
+        const mockExecute = jest.fn().mockResolvedValue();
+        UpdateEmployeeUseCase.execute.mockImplementation(mockExecute);
+
+        await updateEmployee(event);
+
+        expect(UpdateEmployeeUseCase.execute).toHaveBeenCalledTimes(1);
+        expect(UpdateEmployeeUseCase.execute).toHaveBeenCalledWith("1", {
+            "age": 30,
+            "name": "Jaidson Dantas",
+            "office": "Developer"
+        });
+    });
+
+    it('should return an error when updating the employee', async () => {
+        const event =
+            {
+                body: JSON.stringify(bodyMock),
+                pathParameters: {id: "1"}
+            };
+        const requestBody = bodyMock;
+        const expectedError = new Error('Error in update employee');
+
+        const mockExecute = jest.fn().mockRejectedValue(expectedError);
+        UpdateEmployeeUseCase.execute.mockImplementation(mockExecute);
+
+        const result = await updateEmployee(event);
+
+        expect(UpdateEmployeeUseCase.execute).toHaveBeenCalledTimes(1);
+        expect(UpdateEmployeeUseCase.execute).toHaveBeenCalledWith("1", {
+            "age": 30,
+            "name": "Jaidson Dantas",
+            "office": "Developer"
+        });
+        expect(result).toEqual({
+            statusCode: expectedError.statusCode,
+            body: expectedError.message,
+            undefined,
+        });
     });
 });

@@ -22,12 +22,27 @@ functions:
           method: post
           request:
             schemas:
-              application/json: ${file(./employee/schemas/create-employee.json)}
-
-  api:
-    handler: index.handler
+              application/json: ${file(./employee/schemas/validate-employee.json)}
+  deleteEmployee:
+    handler: employee/handlers.deleteEmployee
     events:
-      - httpApi: '*'
+      - httpApi:
+          path: /api/employees/{id}
+          method: delete
+  updateEmployee:
+    handler: employee/handlers.updateEmployee
+    events:
+      - httpApi:
+          path: /api/employees/{id}
+          method: put
+          request:
+            schemas:
+              application/json: ${file(./employee/schemas/validate-employee.json)}
+
+    api:
+      handler: index.handler
+      events:
+        - httpApi: '*'
 
 plugins:
   - serverless-offline

@@ -53,9 +53,24 @@ class EmployeeRepository {
         }
     }
 
-    async put(id, body) {
+    async getById(id) {
+        try {
+            const params = {
+                ...this.tableName,
+                Key: {
+                    id
+                }
+            }
+            return await this.dynamo.get(params).promise();
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async update(id, body) {
         try {
             const {office, name, age} = body;
+            console.log(body);
             const params = {
                 ...this.tableName,
                 Key: {

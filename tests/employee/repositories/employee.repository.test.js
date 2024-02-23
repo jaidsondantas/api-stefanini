@@ -59,6 +59,26 @@ describe('EmployeeRepository', () => {
         expect(mockDynamoDBClient.delete).toHaveBeenCalledWith(mockParams);
     });
 
+    it('should get employee by id', async () => {
+        const mockParams = {"Key": {"id": "7bf6f4f5-d933-4d51-8505-c01615804ab1"}, "TableName": "employees"}
+        const mockResult = {
+            "office": "Developer",
+            "id": "7bf6f4f5-d933-4d51-8505-c01615804ab1",
+            "name": "Jaidson Dantas",
+            "age": 30
+        }
+        const mockDynamoDBClient = {
+            get: jest.fn().mockReturnThis(),
+            promise: jest.fn().mockResolvedValue(mockResult)
+        };
+        employeeRepository = new EmployeeRepository(mockDynamoDBClient);
+        const result = await employeeRepository.getById('7bf6f4f5-d933-4d51-8505-c01615804ab1');
+
+        expect(mockDynamoDBClient.get).toHaveBeenCalledTimes(1);
+        expect(mockDynamoDBClient.get).toHaveBeenCalledWith(mockParams);
+        expect(result).toEqual(mockResult);
+    });
+
     it('should update employee', async () => {
         const body = {
             name: "Jose Santos",
@@ -88,7 +108,7 @@ describe('EmployeeRepository', () => {
         };
 
         employeeRepository = new EmployeeRepository(mockDynamoDBClient);
-        const result = await employeeRepository.put('1', body);
+        const result = await employeeRepository.update('1', body);
 
         expect(mockDynamoDBClient.update).toHaveBeenCalledTimes(1);
         expect(mockDynamoDBClient.update).toHaveBeenCalledWith(mockParams);
