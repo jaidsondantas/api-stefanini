@@ -1,0 +1,33 @@
+org: jaidsondantas
+app: api-estefanini
+service: api-estefanini
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+
+functions:
+  getAllEmployee:
+    handler: employee/handlers.getAllEmployee
+    events:
+      - httpApi:
+          path: /api/employees
+          method: get
+  createEmployee:
+    handler: employee/handlers.createEmployee
+    events:
+      - httpApi:
+          path: /api/employees
+          method: post
+          request:
+            schemas:
+              application/json: ${file(./employee/schemas/create-employee.json)}
+
+  api:
+    handler: index.handler
+    events:
+      - httpApi: '*'
+
+plugins:
+  - serverless-offline

@@ -1,0 +1,17 @@
+{
+  "name": "api-estefanini",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "jest"
+  },
+  "description": "",
+  "dependencies": {
+    "aws-sdk": "^2.1564.0",
+    "serverless-http": "^3.1.1",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "serverless-offline": "^13.3.3"
+  }
+}
