@@ -2,22 +2,10 @@ org: jaidsondantas
 app: api-estefanini
 service: api-estefanini
 frameworkVersion: '3'
-
-params:
-  default:
-    awsKeyId: AKIA6GBMH5WJLTDOXEPJ
-    awsAccessKeyId: VogIUnec7CDOhmW9g8N08nU8+tOY9TCOIH8HAPsY
-
 provider:
   name: aws
   runtime: nodejs18.x
-  environment:
-    dev:
-      AWS_KEY_ID: ${param:awsKeyId},
-      AWS_ACCESS_KEY: ${param:awsAccessKeyId}
-    prod:
-      AWS_KEY_ID: ${param:awsKeyId},
-      AWS_ACCESS_KEY: ${param:awsAccessKeyId}
+useDotenv: true
 
 functions:
   getAllEmployee:
@@ -26,6 +14,14 @@ functions:
       - httpApi:
           path: /api/employees
           method: get
+          cors:
+            origin: '*'
+      - httpApi:
+          path: /api/employees
+          method: options
+          cors:
+            origin: '*'
+
   createEmployee:
     handler: employee/handlers.createEmployee
     events:
@@ -35,12 +31,24 @@ functions:
           request:
             schemas:
               application/json: ${file(./employee/schemas/validate-employee.json)}
+          cors:
+            origin: '*'
+
   deleteEmployee:
     handler: employee/handlers.deleteEmployee
     events:
       - httpApi:
           path: /api/employees/{id}
           method: delete
+          cors:
+            origin: '*'
+      - httpApi:
+          path: /api/employees/{id}
+          method: options
+          cors:
+            origin: '*'
+
+
   updateEmployee:
     handler: employee/handlers.updateEmployee
     events:
@@ -50,5 +58,8 @@ functions:
           request:
             schemas:
               application/json: ${file(./employee/schemas/validate-employee.json)}
+          cors:
+            origin: '*'
+
 plugins:
   - serverless-offline
