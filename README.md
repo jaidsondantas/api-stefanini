@@ -1,106 +1,110 @@
-<!--
-title: 'Serverless Framework Node Express API on AWS'
-description: 'This template demonstrates how to develop and deploy a simple Node Express API running on AWS Lambda using the traditional Serverless Framework.'
-layout: Doc
-framework: v3
-platform: AWS
-language: nodeJS
-priority: 1
-authorLink: 'https://github.com/serverless'
-authorName: 'Serverless, inc.'
-authorAvatar: 'https://avatars1.githubusercontent.com/u/13742415?s=200&v=4'
--->
+### API CRUD de Funcionários
 
-# Serverless Framework Node Express API on AWS
+Este projeto consiste em uma API CRUD de funcionários, permitindo a criação, edição, visualização e exclusão de informações de funcionários. A API é disponibilizada por meio de lambdas diretamente na AWS, utilizando o framework Serverless.
 
-This template demonstrates how to develop and deploy a simple Node Express API service running on AWS Lambda using the traditional Serverless Framework.
+#### Passo a passo para rodar o projeto
 
-## Anatomy of the template
+Antes de iniciar a configuração do projeto, verifique se você possui o Node instalado em sua máquina. A versão mínima do Node requerida e homologada é 16.20.2.
 
-This template configures a single function, `api`, which is responsible for handling all incoming requests thanks to the `httpApi` event. To learn more about `httpApi` event configuration options, please refer to [httpApi event docs](https://www.serverless.com/framework/docs/providers/aws/events/http-api/). As the event is configured in a way to accept all incoming requests, `express` framework is responsible for routing and handling requests internally. Implementation takes advantage of `serverless-http` package, which allows you to wrap existing `express` applications. To learn more about `serverless-http`, please refer to corresponding [GitHub repository](https://github.com/dougmoscrop/serverless-http).
+1. **Instalação do Node**
 
-## Usage
+   Para instalar o Node, visite o [site oficial do Node.js](https://nodejs.org) e siga as instruções de instalação compatíveis com o seu sistema operacional.
 
-### Deployment
+2. **Instalação do AWS SDK e configuração de login**
 
-Install dependencies with:
+   O projeto utiliza o AWS SDK para conectar e interagir com os serviços da AWS. Siga os passos abaixo para instalar o AWS CLI e configurar suas credenciais:
+
+   Abra o terminal (ou prompt de comando) e execute o seguinte comando para instalar o AWS CLI:
+   ```
+   $ npm install -g aws-cli
+   ```
+   Após a instalação, execute o comando `aws configure` no terminal e digite suas credenciais da AWS quando solicitado. Certifique-se de ter permissões adequadas para criar e gerenciar os recursos necessários para a API.
+
+3. **Instalação do Serverless**
+
+   A API foi desenvolvida utilizando o Serverless Framework para facilitar a implantação na AWS Lambda. Siga os passos abaixo para instalar o Serverless:
+
+   Abra o terminal (ou prompt de comando) e execute o seguinte comando para instalar o Serverless:
+   ```
+   $ npm install -g serverless
+   ```
+   Após a instalação, navegue até o diretório raiz do projeto e execute o seguinte comando para instalar as dependências do projeto:
+   ```
+   $ npm install
+   ```
+
+
+
+#### Persistência de dados
+
+Esta API utiliza o serviço DynamoDB da AWS para persistência dos dados dos funcionários. Antes de executar o projeto, certifique-se de ter uma instância do DynamoDB configurada na sua conta da AWS.
+
+#### Execução do projeto
+
+Após realizar todas as etapas de instalação e configuração descritas acima, você pode executar o projeto rodando o seguinte comando na raiz do projeto:
+```
+$ serverless deploy
+```
+Este comando fará o deploy da API para a AWS Lambda e irá fornecer a URL necessária para realizar as requisições.
+
+### Apis já disponibilizada pelos próximos 30 dias.
+Para esse projeto foi disponiblizado os seguintes endpoints:
+1. Criação de Funcionário
 
 ```
-npm install
+POST - https://rzr11ciqh5.execute-api.us-east-1.amazonaws.com/production/api/employees
+```
+#### Body
+```
+{
+    "name": "Jaidson Dantas",
+    "age": 30,
+    "office": "Teste"
+}
 ```
 
-and then deploy with:
+2. Atualização de Funcionário
 
 ```
-serverless deploy
+PUT - https://rzr11ciqh5.execute-api.us-east-1.amazonaws.com/production/api/employees/{id}
+```
+#### Body
+```
+{
+    "name": "Jaidson Dantas",
+    "age": 30,
+    "office": "Teste"
+}
 ```
 
-After running deploy, you should see output similar to:
-
-```bash
-Deploying aws-node-express-api-project to stage dev (us-east-1)
-
-✔ Service deployed to stack aws-node-express-api-project-dev (196s)
-
-endpoint: ANY - https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com
-functions:
-  api: aws-node-express-api-project-dev-api (766 kB)
-```
-
-_Note_: In current form, after deployment, your API is public and can be invoked by anyone. For production deployments, you might want to configure an authorizer. For details on how to do that, refer to [`httpApi` event docs](https://www.serverless.com/framework/docs/providers/aws/events/http-api/).
-
-### Invocation
-
-After successful deployment, you can call the created application via HTTP:
-
-```bash
-curl https://xxxxxxx.execute-api.us-east-1.amazonaws.com/
-```
-
-Which should result in the following response:
+3. Busca de Funcionários
 
 ```
-{"message":"Hello from root!"}
+GET - https://rzr11ciqh5.execute-api.us-east-1.amazonaws.com/api/employees
+```
+#### Response
+```
+{
+    "Items": [
+        {
+            "office": "Teste",
+            "id": "e8eb97df-3965-4ca9-bbe1-ff6583b5665a",
+            "name": "Jaidson Dantas",
+            "age": 30
+        }
+    ],
+    "Count": 1,
+    "ScannedCount": 1
+}
 ```
 
-Calling the `/hello` path with:
-
-```bash
-curl https://xxxxxxx.execute-api.us-east-1.amazonaws.com/hello
-```
-
-Should result in the following response:
-
-```bash
-{"message":"Hello from path!"}
-```
-
-If you try to invoke a path or method that does not have a configured handler, e.g. with:
-
-```bash
-curl https://xxxxxxx.execute-api.us-east-1.amazonaws.com/nonexistent
-```
-
-You should receive the following response:
-
-```bash
-{"error":"Not Found"}
-```
-
-### Local development
-
-It is also possible to emulate API Gateway and Lambda locally by using `serverless-offline` plugin. In order to do that, execute the following command:
-
-```bash
-serverless plugin install -n serverless-offline
-```
-
-It will add the `serverless-offline` plugin to `devDependencies` in `package.json` file as well as will add it to `plugins` in `serverless.yml`.
-
-After installation, you can start local emulation with:
+3. Remoção de Funcionários
 
 ```
-serverless offline
+DELETE - https://rzr11ciqh5.execute-api.us-east-1.amazonaws.com/api/employees/{id}
 ```
+🤪 Foi disponibiliado na raiz do projeto uma collection para uso no postman.
 
-To learn more about the capabilities of `serverless-offline`, please refer to its [GitHub repository](https://github.com/dherault/serverless-offline).
+#### Créditos
+
+Este projeto foi desenvolvido por Jaidson Dantas em fevereiro de 2024.
