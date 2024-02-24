@@ -3,9 +3,21 @@ app: api-estefanini
 service: api-estefanini
 frameworkVersion: '3'
 
+params:
+  default:
+    awsKeyId: AKIA6GBMH5WJLTDOXEPJ
+    awsAccessKeyId: VogIUnec7CDOhmW9g8N08nU8+tOY9TCOIH8HAPsY
+
 provider:
   name: aws
   runtime: nodejs18.x
+  environment:
+    dev:
+      AWS_KEY_ID: ${param:awsKeyId},
+      AWS_ACCESS_KEY: ${param:awsAccessKeyId}
+    prod:
+      AWS_KEY_ID: ${param:awsKeyId},
+      AWS_ACCESS_KEY: ${param:awsAccessKeyId}
 
 functions:
   getAllEmployee:
@@ -38,11 +50,5 @@ functions:
           request:
             schemas:
               application/json: ${file(./employee/schemas/validate-employee.json)}
-
-    api:
-      handler: index.handler
-      events:
-        - httpApi: '*'
-
 plugins:
   - serverless-offline
