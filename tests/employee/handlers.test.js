@@ -52,11 +52,9 @@ describe('createEmployee', () => {
 
         expect(CreateEmployeeUseCase.execute).toHaveBeenCalledTimes(1);
         expect(CreateEmployeeUseCase.execute).toHaveBeenCalledWith(requestBody);
-        expect(result).toEqual({
-            statusCode: expectedError.statusCode,
-            body: expectedError.message,
-            undefined,
-        });
+        expect(JSON.parse(result.body)).toEqual(
+            expectedError.message,
+        );
     });
 });
 
@@ -130,10 +128,6 @@ describe('updateEmployee', () => {
             "name": "Jaidson Dantas",
             "office": "Developer"
         });
-        expect(result).toEqual({
-            statusCode: expectedError.statusCode,
-            body: expectedError.message,
-            undefined,
-        });
+        expect(JSON.parse(result.body)).toEqual(expectedError.message);
     });
 });

@@ -1,11 +1,10 @@
 'use strict'
-
 const {extractBody} = require("./helpers/extract.helper");
-const {headers} = require("../config/config");
 const CreateEmployeeUseCase = require("./use-cases/create-employee.use-case");
 const GetAllEmployeeUseCase = require("./use-cases/get-all-employee.use-case");
 const DeleteEmployeeUseCase = require("./use-cases/delete-employee.use-case");
 const UpdateEmployeeUseCase = require("./use-cases/update-employee.use-case");
+const buildResponse = require("../config/config");
 
 let body;
 
@@ -14,69 +13,48 @@ module.exports.createEmployee = async (event) => {
 
     try {
         const requestBody = extractBody(event);
-        const res = await CreateEmployeeUseCase.execute(requestBody);
-        body = JSON.stringify(res);
+        body = await CreateEmployeeUseCase.execute(requestBody);
     } catch (error) {
         statusCode = error?.statusCode
         body = error?.message
     }
 
-    return {
-        statusCode,
-        body,
-        headers,
-    };
+    return buildResponse(statusCode, body);
 }
 
 module.exports.getAllEmployee = async (event) => {
     let statusCode = 200;
     try {
-        const res = await GetAllEmployeeUseCase.execute();
-        body = JSON.stringify(res)
+        body = await GetAllEmployeeUseCase.execute();
     } catch (error) {
         statusCode = error?.statusCode
         body = error?.message
     }
 
-    return {
-        statusCode,
-        body,
-        headers,
-    };
+    return buildResponse(statusCode, body);
 }
 
 module.exports.deleteEmployee = async (event) => {
     let statusCode = 200;
     try {
-
-        const res = await DeleteEmployeeUseCase.execute(event.pathParameters.id);
-        body = JSON.stringify(res)
+        body = await DeleteEmployeeUseCase.execute(event.pathParameters.id);
     } catch (error) {
         statusCode = error?.statusCode
         body = error?.message
     }
 
-    return {
-        statusCode,
-        body,
-        headers,
-    };
+    return buildResponse(statusCode, body);
 }
 
 module.exports.updateEmployee = async (event) => {
     let statusCode = 200;
     try {
         const requestBody = extractBody(event);
-        const res = await UpdateEmployeeUseCase.execute(event.pathParameters.id, requestBody);
-        body = JSON.stringify(res)
+        body = await UpdateEmployeeUseCase.execute(event.pathParameters.id, requestBody);
     } catch (error) {
         statusCode = error?.statusCode
         body = error?.message
     }
 
-    return {
-        statusCode,
-        body,
-        headers,
-    };
+    return buildResponse(statusCode, body);
 }
