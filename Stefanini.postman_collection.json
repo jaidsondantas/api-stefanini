@@ -1,0 +1,114 @@
+{
+	"info": {
+		"_postman_id": "bb8f482b-8183-494f-a394-d45bd1f70cc0",
+		"name": "Stefanini",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8947476"
+	},
+	"item": [
+		{
+			"name": "http://localhost:3000/api/employees",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Jaidson Dantas\",\n    \"age\": 30,\n    \"office\": \"Desenvolvedor\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/employees",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"employees"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/api/employees Copy",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Jaidson Dantas 2\",\n    \"age\": 30,\n    \"office\": \"Desenvolvedor\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://jvst2hz4sywonmuhmu4dtspde40qwolb.lambda-url.us-east-1.on.aws/7bf6f4f5-d933-4d51-8505-c01615804ab1",
+					"protocol": "https",
+					"host": [
+						"jvst2hz4sywonmuhmu4dtspde40qwolb",
+						"lambda-url",
+						"us-east-1",
+						"on",
+						"aws"
+					],
+					"path": [
+						"7bf6f4f5-d933-4d51-8505-c01615804ab1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/api/employees Copy",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/employees",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"employees"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/api/employees Copy 2",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://rzr11ciqh5.execute-api.us-east-1.amazonaws.com/api/employees/d6acd502-4a91-4be6-91d9-57888539d9ba",
+					"protocol": "https",
+					"host": [
+						"rzr11ciqh5",
+						"execute-api",
+						"us-east-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"api",
+						"employees",
+						"d6acd502-4a91-4be6-91d9-57888539d9ba"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
